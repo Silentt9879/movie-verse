@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/movie-verse/static/css/main.2f5537c1.css",
+    "main.js": "/movie-verse/static/js/main.bbea2692.js",
+    "index.html": "/movie-verse/index.html",
+    "main.2f5537c1.css.map": "/movie-verse/static/css/main.2f5537c1.css.map",
+    "main.bbea2692.js.map": "/movie-verse/static/js/main.bbea2692.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2f5537c1.css",
+    "static/js/main.bbea2692.js"
+  ]
+}
