@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Routes, Route, Link } from 'react-router-dom';
 import MovieDetail from './MovieDetail';
+import Row from './Row'; 
 import './App.css';
 
 function App() {
@@ -17,50 +18,42 @@ function App() {
 }
 
 function Home() {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState([]); 
   const [heroMovie, setHeroMovie] = useState(null);
   const [searchKey, setSearchKey] = useState("");
   const [trailerKey, setTrailerKey] = useState(null);
   const [playing, setPlaying] = useState(false);
-  const [selectedGenre, setSelectedGenre] = useState(null);
 
   const IMAGE_PATH = "https://image.tmdb.org/t/p/original";
-  const POSTER_PATH = "https://image.tmdb.org/t/p/w500";
 
-  const genres = [
-    { id: 28, name: "Action" },
-    { id: 35, name: "Comedy" },
-    { id: 27, name: "Horror" },
-    { id: 18, name: "Drama" },
-    { id: 878, name: "Sci-Fi" },
-    { id: 16, name: "Animation" },
-    { id: 53, name: "Thriller" },
-    { id: 10749, name: "Romance" },
-  ];
+  const requests = {
+    requestPopular: `/movie/popular?language=en-US&page=1`,
+    requestTopRated: `/movie/top_rated?language=en-US&page=1`,
+    requestTrending: `/trending/movie/week?language=en-US`,
+    requestHorror: `/discover/movie?with_genres=27`,
+    requestAction: `/discover/movie?with_genres=28`,
+    requestComedy: `/discover/movie?with_genres=35`,
+  };
 
-  const fetchMovies = async (searchTerm = "", genreId = null) => {
-    const apiKey = process.env.REACT_APP_TMDB_KEY;
-    let type = "movie/popular";
-    let params = { api_key: apiKey };
-
-    if (searchTerm) {
-        type = "search/movie";
-        params.query = searchTerm;
-    } else if (genreId) {
-        type = "discover/movie";
-        params.with_genres = genreId;
-    }
-
-    const { data } = await axios.get(`https://api.themoviedb.org/3/${type}`, { params });
-
-    if (!searchTerm && !genreId && data.results.length > 0) {
-        const randomHero = data.results[Math.floor(Math.random() * 5)];
-        setHeroMovie(randomHero); 
-        setMovies(data.results);
+  const fetchHero = async () => {
+    try {
+        const apiKey = process.env.REACT_APP_TMDB_KEY;
+        const { data } = await axios.get(`https://api.themoviedb.org/3${requests.requestPopular}&api_key=${apiKey}`);
+        const randomHero = data.results[Math.floor(Math.random() * data.results.length)];
+        console.log("Hero Movie Found:", randomHero.title); // 👈 Check Console if this prints!
+        setHeroMovie(randomHero);
         fetchTrailer(randomHero.id);
-    } else {
-        setMovies(data.results);
+    } catch (error) {
+        console.error("Error fetching hero:", error);
     }
+  };
+
+  const fetchSearch = async () => {
+    const apiKey = process.env.REACT_APP_TMDB_KEY;
+    const { data } = await axios.get(`https://api.themoviedb.org/3/search/movie`, {
+        params: { api_key: apiKey, query: searchKey }
+    });
+    setMovies(data.results);
   };
 
   const fetchTrailer = async (id) => {
@@ -73,130 +66,114 @@ function Home() {
   };
 
   useEffect(() => {
-    fetchMovies();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchHero();
+    // eslint-disable-next-line
   }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setHeroMovie(null);
-    setSelectedGenre(null);
-    fetchMovies(searchKey);
-  };
-
-  const handleGenreClick = (genreId) => {
-    setSearchKey("");
-    setSelectedGenre(genreId);
-    setHeroMovie(null);
-    fetchMovies("", genreId);
+    if(searchKey) fetchSearch();
   };
 
   return (
-    <div className="home-container">
+    <div className="home-container bg-black min-h-screen"> 
+      
+      {/* HEADER */}
       <header className={`header ${heroMovie ? 'transparent' : 'solid'}`}>
         <div className="logo" onClick={() => window.location.reload()}>MOVIE<span className="verse">VERSE</span></div>
         <form onSubmit={handleSearch} className="search-form">
           <input 
             type="text"
-            placeholder="Titles, people, genres"
+            placeholder="Search movies..."
             onChange={(e) => setSearchKey(e.target.value)}
             autoComplete="off"
-            value={searchKey}
           />
           <button type="submit">🔍</button>
         </form>
       </header>
 
-      {heroMovie && (
-        <div className="hero-container">
-            <div className="hero-background" style={{ backgroundImage: `url(${IMAGE_PATH}${heroMovie.backdrop_path})` }}></div>
-            <div className="hero-content">
-                <h1 className="hero-title">{heroMovie.title}</h1>
-                <p className="hero-overview">{heroMovie.overview ? heroMovie.overview.substring(0, 150) + "..." : ""}</p>
-                <div className="hero-buttons">
-                    {trailerKey && <button className="btn btn-play" onClick={() => setPlaying(true)}>▶ Watch Trailer</button>}
-                    <Link to={`/movie/${heroMovie.id}`} className="btn btn-more">ℹ More Info</Link>
-                </div>
+      {searchKey ? (
+         <div className="content-container pt-32">
+            <h2 className="text-white text-2xl font-bold mb-4 px-8">Results for "{searchKey}"</h2>
+            <div className="movie-grid">
+                {movies.map((movie) => (
+                <Link to={`/movie/${movie.id}`} key={movie.id}>
+                    <div className="movie-card relative hover:scale-105 duration-300">
+                        <img src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "placeholder.jpg"} alt={movie.title} className="rounded-md"/>
+                    </div>
+                </Link>
+                ))}
             </div>
-            <div className="hero-fade-bottom"></div>
-        </div>
+         </div>
+      ) : (
+        <>
+            {/* HERO */}
+            {heroMovie && (
+                <div className="hero-container relative h-[85vh] w-full">
+                    
+                    {/* BACKGROUND IMAGE (Z-0) */}
+                    <div 
+                        className="hero-background absolute top-0 left-0 w-full h-full bg-cover bg-center z-0" 
+                        style={{ backgroundImage: `url(${IMAGE_PATH}${heroMovie.backdrop_path})` }}
+                    >
+                        {/* Dark Overlay so text pops */}
+                        <div className="w-full h-full bg-black/40" />
+                    </div>
+                    
+                    {/* CONTENT (Z-10) */}
+                    <div className="hero-content absolute top-[30%] left-10 md:left-20 text-white z-10">
+                        <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg">{heroMovie.title}</h1>
+                        <p className="max-w-[600px] text-gray-200 text-lg mb-8 drop-shadow-md">{heroMovie.overview?.slice(0,150)}...</p>
+                        <div className="hero-buttons flex gap-4">
+                            {trailerKey && (
+                                <button 
+                                    className="bg-white text-black py-3 px-8 rounded font-bold hover:bg-gray-200 flex items-center gap-2"
+                                    onClick={() => setPlaying(true)}
+                                >
+                                    ▶ Play
+                                </button>
+                            )}
+                            <Link to={`/movie/${heroMovie.id}`} className="bg-gray-500/70 text-white py-3 px-8 rounded font-bold hover:bg-gray-500/50">
+                                ℹ More Info
+                            </Link>
+                        </div>
+                    </div>
+                    
+                    {/* FADE BOTTOM */}
+                    <div className="absolute bottom-0 w-full h-[7.4rem] bg-gradient-to-t from-black to-transparent z-10" />
+                </div>
+            )}
+
+            {/* ROWS */}
+            <div className="-mt-32 relative z-20 pl-4 md:pl-10 pb-20">
+                <Row title="Trending Now" fetchURL={requests.requestTrending} />
+                <Row title="Top Rated" fetchURL={requests.requestTopRated} />
+                <Row title="Action Thrillers" fetchURL={requests.requestAction} />
+                <Row title="Comedy Movies" fetchURL={requests.requestComedy} />
+                <Row title="Horror Movies" fetchURL={requests.requestHorror} />
+            </div>
+        </>
       )}
 
+      {/* VIDEO PLAYER */}
       {playing && trailerKey && (
-        <div className="video-modal-overlay" onClick={() => setPlaying(false)}>
-            <div className="video-modal-content">
+        <div className="video-modal-overlay fixed inset-0 bg-black/90 z-50 flex justify-center items-center" onClick={() => setPlaying(false)}>
+            <div className="w-full max-w-4xl aspect-video relative bg-black">
                 <iframe 
                     width="100%" height="100%" 
                     src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`} 
-                    title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen
+                    title="Trailer" frameBorder="0" allowFullScreen
                 ></iframe>
-                <button className="close-video" onClick={() => setPlaying(false)}>Close X</button>
+                <button className="absolute -top-10 right-0 text-white hover:text-red-500" onClick={() => setPlaying(false)}>Close X</button>
             </div>
         </div>
       )}
-
-      <div className="content-container">
-        <div className="genre-container">
-            {genres.map((genre) => (
-                <button 
-                    key={genre.id}
-                    className={`genre-btn ${selectedGenre === genre.id ? 'active' : ''}`}
-                    onClick={() => handleGenreClick(genre.id)}
-                >
-                    {genre.name}
-                </button>
-            ))}
-        </div>
-
-        <h2 className="section-title">
-            {searchKey ? `Results for "${searchKey}"` : selectedGenre ? `Category: ${genres.find(g => g.id === selectedGenre)?.name}` : "Trending Now"}
-        </h2>
-        
-        <div className="movie-grid">
-            {movies.map((movie) => (
-            <Link to={`/movie/${movie.id}`} key={movie.id}>
-                <div className="movie-card">
-                <img src={movie.poster_path ? `${POSTER_PATH}${movie.poster_path}` : "placeholder.jpg"} alt={movie.title} />
-                <div className="movie-overlay">
-                    <h3>{movie.title}</h3>
-                    <span className="rating">⭐ {movie.vote_average.toFixed(1)}</span>
-                </div>
-                </div>
-            </Link>
-            ))}
-        </div>
-      </div>
     </div>
   );
 }
 
 function Footer() {
-    return (
-        <footer className="footer">
-            <div className="footer-content">
-                <div className="footer-brand">
-                    <h3>MOVIE<span className="verse">VERSE</span></h3>
-                    <p>The best place to discover your next favorite movie.</p>
-                </div>
-                <div className="footer-links">
-                    <h4>Explore</h4>
-                    <a href="#!">Home</a>
-                    <a href="#!">Trending</a>
-                    <a href="#!">Top Rated</a>
-                </div>
-                <div className="footer-social">
-                    <h4>Connect</h4>
-                    <a href="https://github.com/Silentt9879" target="_blank" rel="noreferrer">GitHub</a>
-                    <a href="#!">Twitter</a>
-                    <a href="#!">Instagram</a>
-                </div>
-            </div>
-            <div className="footer-bottom">
-                <p>&copy; 2025 MovieVerse. All rights reserved.</p>
-                <p>Powered by <a href="https://www.themoviedb.org/" target="_blank" rel="noreferrer" style={{color:'#01b4e4'}}>TMDB</a></p>
-            </div>
-        </footer>
-    );
+    return <footer className="text-center text-gray-500 py-10 bg-[#111]">MovieVerse &copy; 2025</footer>
 }
 
 export default App;
