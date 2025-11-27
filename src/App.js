@@ -1,179 +1,124 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Routes, Route, Link } from 'react-router-dom';
-import MovieDetail from './MovieDetail';
-import Row from './Row'; 
+import React, { useState, useEffect } from 'react'; 
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+
+// 👇 FIX: Use local import paths (./) since these files are likely in the same root src/ directory as App.js
+import MovieDetail from './pages/MovieDetail'; 
+import TvShowDetail from './pages/TvShowDetail'; 
+
+import Home from './pages/Home';
+import Watchlist from './Watchlist';
+import PersonDetail from './PersonDetail';
+import Login from './pages/Login'; 
+import Register from './pages/Register';
+import ProfileScreen from './pages/ProfileScreen';
+import MyReviews from './pages/MyReviews';
+
+import MobileNav from './components/MobileNav';
+import BackToTop from './components/BackToTop';
+import LoadingBar from './components/LoadingBar';
 import './App.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// --- FIREBASE AUTH IMPORTS ---
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './firebase'; 
+// -----------------------------
+
+// Define Global Context to share states across the application
+export const GlobalContext = React.createContext(); 
+export const AuthContext = React.createContext(); 
 
 function App() {
-  return (
-    <div className="app-container">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/movie/:id" element={<MovieDetail />} />
-      </Routes>
-      <Footer />
-    </div>
-  );
-}
-
-function Home() {
-  const [movies, setMovies] = useState([]); 
-  const [heroMovie, setHeroMovie] = useState(null);
-  const [searchKey, setSearchKey] = useState("");
-  const [trailerKey, setTrailerKey] = useState(null);
-  const [playing, setPlaying] = useState(false);
-
-  const IMAGE_PATH = "https://image.tmdb.org/t/p/original";
-
-  const requests = {
-    requestPopular: `/movie/popular?language=en-US&page=1`,
-    requestTopRated: `/movie/top_rated?language=en-US&page=1`,
-    requestTrending: `/trending/movie/week?language=en-US`,
-    requestHorror: `/discover/movie?with_genres=27`,
-    requestAction: `/discover/movie?with_genres=28`,
-    requestComedy: `/discover/movie?with_genres=35`,
-  };
-
-  const fetchHero = async () => {
-    try {
-        const apiKey = process.env.REACT_APP_TMDB_KEY;
-        const { data } = await axios.get(`https://api.themoviedb.org/3${requests.requestPopular}&api_key=${apiKey}`);
-        const randomHero = data.results[Math.floor(Math.random() * data.results.length)];
-        console.log("Hero Movie Found:", randomHero.title); // 👈 Check Console if this prints!
-        setHeroMovie(randomHero);
-        fetchTrailer(randomHero.id);
-    } catch (error) {
-        console.error("Error fetching hero:", error);
-    }
-  };
-
-  const fetchSearch = async () => {
-    const apiKey = process.env.REACT_APP_TMDB_KEY;
-    const { data } = await axios.get(`https://api.themoviedb.org/3/search/movie`, {
-        params: { api_key: apiKey, query: searchKey }
-    });
-    setMovies(data.results);
-  };
-
-  const fetchTrailer = async (id) => {
-    const apiKey = process.env.REACT_APP_TMDB_KEY;
-    const { data } = await axios.get(`https://api.themoviedb.org/3/movie/${id}/videos`, {
-        params: { api_key: apiKey }
-    });
-    const trailer = data.results.find(vid => vid.name.includes("Official Trailer") || vid.type === "Trailer");
-    if (trailer) setTrailerKey(trailer.key);
-  };
-
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [mediaType, setMediaType] = useState('movie'); 
+  
+  // --- AUTH STATES ---
+  const [user, setUser] = useState(null); 
+  const [authInitialized, setAuthInitialized] = useState(false); 
+  
+  // --- 1. SETUP AUTH LISTENER ---
   useEffect(() => {
-    fetchHero();
-    // eslint-disable-next-line
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+            setUser(currentUser); 
+        } else {
+            setUser(null);
+        }
+        setAuthInitialized(true);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if(searchKey) fetchSearch();
+  // Helper functions 
+  const getFavoriteGenre = (currentMediaType) => { 
+      return { favoriteGenreId: null, favoriteGenreName: "" }; 
   };
 
+  function Footer() {
+    return (
+        <footer className="text-center text-gray-500 py-10 pb-24 md:pb-10" style={{backgroundColor: 'var(--color-card-bg)'}}>
+            <p>MovieVerse &copy; 2025</p>
+        </footer>
+    );
+  }
+
   return (
-    <div className="home-container bg-black min-h-screen"> 
-      
-      {/* HEADER */}
-      <header className={`header ${heroMovie ? 'transparent' : 'solid'}`}>
-        <div className="logo" onClick={() => window.location.reload()}>MOVIE<span className="verse">VERSE</span></div>
-        <form onSubmit={handleSearch} className="search-form">
-          <input 
-            type="text"
-            placeholder="Search movies..."
-            onChange={(e) => setSearchKey(e.target.value)}
-            autoComplete="off"
-          />
-          <button type="submit">🔍</button>
-        </form>
-      </header>
+    <AuthContext.Provider value={{ user, auth, authInitialized }}> 
+    <GlobalContext.Provider value={{ isLoading, setIsLoading, mediaType, setMediaType, getFavoriteGenre }}> 
+      <div className="app-container">
+        
+        <LoadingBar isLoading={isLoading} /> 
+        
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<Home />} />
+            {/* These paths assume MovieDetail.js and TvShowDetail.js are at the root of src/ */}
+            <Route path="/movie/:id" element={<MovieDetail />} /> 
+            <Route path="/tv/:id" element={<TvShowDetail />} /> 
+            
+            <Route path="/mylist" element={<Watchlist />} />
+            <Route path="/person/:id" element={<PersonDetail />} />
+            <Route path="/login" element={<Login />} /> 
+            <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<ProfileScreen />} /> 
+            <Route path="/myreviews" element={<MyReviews />} />
 
-      {searchKey ? (
-         <div className="content-container pt-32">
-            <h2 className="text-white text-2xl font-bold mb-4 px-8">Results for "{searchKey}"</h2>
-            <div className="movie-grid">
-                {movies.map((movie) => (
-                <Link to={`/movie/${movie.id}`} key={movie.id}>
-                    <div className="movie-card relative hover:scale-105 duration-300">
-                        <img src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "placeholder.jpg"} alt={movie.title} className="rounded-md"/>
-                    </div>
+            <Route path="*" element={
+              <div className="h-screen flex flex-col items-center justify-center text-white bg-black">
+                <h1 className="text-9xl font-bold text-red-600">404</h1>
+                <p className="text-2xl mt-4">Page Not Found</p>
+                <Link to="/" className="mt-8 px-6 py-3 bg-white text-black font-bold rounded hover:bg-gray-200">
+                  Go Home
                 </Link>
-                ))}
-            </div>
-         </div>
-      ) : (
-        <>
-            {/* HERO */}
-            {heroMovie && (
-                <div className="hero-container relative h-[85vh] w-full">
-                    
-                    {/* BACKGROUND IMAGE (Z-0) */}
-                    <div 
-                        className="hero-background absolute top-0 left-0 w-full h-full bg-cover bg-center z-0" 
-                        style={{ backgroundImage: `url(${IMAGE_PATH}${heroMovie.backdrop_path})` }}
-                    >
-                        {/* Dark Overlay so text pops */}
-                        <div className="w-full h-full bg-black/40" />
-                    </div>
-                    
-                    {/* CONTENT (Z-10) */}
-                    <div className="hero-content absolute top-[30%] left-10 md:left-20 text-white z-10">
-                        <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg">{heroMovie.title}</h1>
-                        <p className="max-w-[600px] text-gray-200 text-lg mb-8 drop-shadow-md">{heroMovie.overview?.slice(0,150)}...</p>
-                        <div className="hero-buttons flex gap-4">
-                            {trailerKey && (
-                                <button 
-                                    className="bg-white text-black py-3 px-8 rounded font-bold hover:bg-gray-200 flex items-center gap-2"
-                                    onClick={() => setPlaying(true)}
-                                >
-                                    ▶ Play
-                                </button>
-                            )}
-                            <Link to={`/movie/${heroMovie.id}`} className="bg-gray-500/70 text-white py-3 px-8 rounded font-bold hover:bg-gray-500/50">
-                                ℹ More Info
-                            </Link>
-                        </div>
-                    </div>
-                    
-                    {/* FADE BOTTOM */}
-                    <div className="absolute bottom-0 w-full h-[7.4rem] bg-gradient-to-t from-black to-transparent z-10" />
-                </div>
-            )}
+              </div>
+            } />
+          </Routes>
+        </AnimatePresence>
+        
+        <MobileNav />
+        <BackToTop />
+        <Footer />
 
-            {/* ROWS */}
-            <div className="-mt-32 relative z-20 pl-4 md:pl-10 pb-20">
-                <Row title="Trending Now" fetchURL={requests.requestTrending} />
-                <Row title="Top Rated" fetchURL={requests.requestTopRated} />
-                <Row title="Action Thrillers" fetchURL={requests.requestAction} />
-                <Row title="Comedy Movies" fetchURL={requests.requestComedy} />
-                <Row title="Horror Movies" fetchURL={requests.requestHorror} />
-            </div>
-        </>
-      )}
-
-      {/* VIDEO PLAYER */}
-      {playing && trailerKey && (
-        <div className="video-modal-overlay fixed inset-0 bg-black/90 z-50 flex justify-center items-center" onClick={() => setPlaying(false)}>
-            <div className="w-full max-w-4xl aspect-video relative bg-black">
-                <iframe 
-                    width="100%" height="100%" 
-                    src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`} 
-                    title="Trailer" frameBorder="0" allowFullScreen
-                ></iframe>
-                <button className="absolute -top-10 right-0 text-white hover:text-red-500" onClick={() => setPlaying(false)}>Close X</button>
-            </div>
-        </div>
-      )}
-    </div>
+        <ToastContainer 
+          position="bottom-right" 
+          autoClose={3000} 
+          hideProgressBar={false} 
+          newestOnTop={false} 
+          closeOnClick 
+          rtl={false} 
+          pauseOnFocusLoss 
+          draggable 
+          pauseOnHover 
+          theme={"dark"}
+        />
+      </div>
+    </GlobalContext.Provider>
+    </AuthContext.Provider>
   );
-}
-
-function Footer() {
-    return <footer className="text-center text-gray-500 py-10 bg-[#111]">MovieVerse &copy; 2025</footer>
 }
 
 export default App;

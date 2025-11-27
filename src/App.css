@@ -1,364 +1,130 @@
-/* src/App.css */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
+/* --- GLOBAL DARK MODE VARIABLES --- */
 :root {
-  --primary: #e50914;
-  --dark: #141414;
-  --light: #f5f5f1;
+    --color-primary: #e50914;
+    /* Red */
+    --color-text: #f5f5f1;
+    /* Light White */
+    --color-background: #141414;
+    /* Deep Dark */
+    --color-card-bg: #1f1f1f;
+    /* Card Darker Grey */
+    --color-border: #333;
+    /* Border Grey */
+    --color-shadow: rgba(0, 0, 0, 0.8);
+    --color-text-hero: white;
 }
 
 body {
-  margin: 0;
-  background-color: var(--dark);
-  color: var(--light);
-  font-family: 'Montserrat', sans-serif;
-  overflow-x: hidden;
+    margin: 0;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: auto;
+    overflow-y: scroll;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- HEADER --- */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 50px;
-  position: fixed;
-  width: 100%;
-  z-index: 100;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%);
-  transition: background 0.3s;
+/* --- TAILWIND CLASS OVERRIDES --- */
+.bg-black {
+    background-color: var(--color-background) !important;
 }
 
-.header.solid { background-color: var(--dark); }
-
-.logo {
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: var(--primary);
-  letter-spacing: -1px;
-}
-.verse { color: white; }
-
-.search-form input {
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.5);
-  padding: 8px 15px;
-  border-radius: 4px; /* Cleaner boxy look */
-  color: white;
-  width: 0; /* Hidden initially */
-  opacity: 0;
-  transition: all 0.4s ease;
-  cursor: pointer;
+.text-white {
+    color: var(--color-text) !important;
 }
 
-.search-form:hover input, 
-.search-form input:focus {
-  width: 250px;
-  opacity: 1;
-  background: black;
-  cursor: text;
+.text-red-600 {
+    color: var(--color-primary) !important;
 }
 
-.search-form button {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  margin-left: 10px;
+.border-red-600 {
+    border-color: var(--color-primary) !important;
 }
 
-/* --- HERO (BILLBOARD) --- */
-.hero-container {
-  position: relative;
-  height: 85vh;
-  color: white;
-  overflow: hidden;
+.bg-\[\#181818\],
+.bg-\[\#1a1a1a\],
+.bg-\[\#111\] {
+    background-color: var(--color-card-bg) !important;
+    color: var(--color-text) !important;
 }
 
-.hero-background {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background-size: cover;
-  background-position: center top;
-  /* The "Ken Burns" Slow Zoom Effect */
-  animation: slowZoom 20s infinite alternate; 
+.border-gray-800,
+.border-gray-700 {
+    border-color: var(--color-border) !important;
 }
 
-@keyframes slowZoom {
-  from { transform: scale(1); }
-  to { transform: scale(1.1); }
+.hover\:ring-white\/50:hover {
+    --tw-ring-color: var(--color-primary) !important;
 }
 
-.hero-content {
-  position: absolute;
-  bottom: 25%;
-  left: 50px;
-  max-width: 600px;
-  z-index: 10;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+/* 3. FIXING HERO TEXT COLOR */
+.hero-container .text-white {
+    color: var(--color-text-hero) !important;
 }
 
-.hero-title {
-  font-size: 4rem;
-  font-weight: 900;
-  margin-bottom: 15px;
-  line-height: 1;
+/* --- SCROLLBARS --- */
+/* The scrollbar-hide class ensures no visible scrollbar, but allows scrolling */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
 }
 
-.hero-overview {
-  font-size: 1.2rem;
-  margin-bottom: 25px;
-  line-height: 1.5;
-  font-weight: 500;
-  text-shadow: 1px 1px 3px black;
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-.hero-buttons {
-  display: flex;
-  gap: 15px;
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-.btn {
-  padding: 12px 30px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 1.1rem;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.2s;
+::-webkit-scrollbar-track {
+    background: var(--color-background);
 }
 
-.btn-play {
-  background: white;
-  color: black;
-}
-.btn-play:hover { background: rgba(255,255,255,0.8); }
-
-.btn-more {
-  background: rgba(109, 109, 110, 0.7);
-  color: white;
-}
-.btn-more:hover { background: rgba(109, 109, 110, 0.4); }
-
-.hero-fade-bottom {
-  position: absolute;
-  bottom: 0; width: 100%; height: 200px;
-  background: linear-gradient(180deg, transparent, #141414);
+::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
 }
 
-/* --- GRID SECTION --- */
-.content-container {
-  padding: 20px 50px;
-  margin-top: -100px; /* Pull grid up */
-  position: relative;
-  z-index: 20;
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
 }
 
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #e5e5e5;
+::selection {
+    background: var(--color-primary);
+    color: white;
 }
 
-.movie-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
+
+/* --- 🔔 NETFLIX STYLE NOTIFICATIONS --- */
+.Toastify__toast {
+    background-color: var(--color-card-bg) !important;
+    color: var(--color-text) !important;
+    border: 1px solid var(--color-border) !important;
 }
 
-.movie-card {
-  background-color: #1f1f1f;
-  position: relative;
-  border-radius: 4px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-  aspect-ratio: 2/3; /* Forces standard movie poster shape */
+.Toastify__toast--success,
+.Toastify__toast--error {
+    border-left: 4px solid var(--color-primary) !important;
 }
 
-.movie-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.Toastify__progress-bar {
+    background: var(--color-primary) !important;
 }
 
-/* The "Reveal" Overlay */
-.movie-overlay {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: linear-gradient(to top, black, transparent);
-  padding: 20px 10px 10px 10px;
-  transform: translateY(100%); /* Hide by default */
-  transition: transform 0.3s ease;
+.Toastify__toast-icon svg {
+    fill: var(--color-primary) !important;
 }
 
-.movie-card:hover {
-  transform: scale(1.1); /* Pop out */
-  z-index: 100;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-  border: 2px solid #333;
-}
-
-.movie-card:hover .movie-overlay {
-  transform: translateY(0); /* Slide up on hover */
-}
-
-.movie-overlay h3 {
-  font-size: 1rem;
-  margin: 0 0 5px 0;
-  color: white; /* Force white text */
-  text-shadow: 1px 1px 2px black; /* Adds shadow for readability */
-}
-
-.movie-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  color: #ccc;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .hero-title { font-size: 2.5rem; }
-  .hero-content { width: 100%; left: 20px; bottom: 15%; }
-  .header { padding: 20px; }
-  .content-container { padding: 20px; }
-  .search-form input { width: 150px; opacity: 1; } /* Always show search on mobile */
-}
-
-/* Fixes the blue text color */
-a {
-  text-decoration: none;
-  color: inherit; /* Forces links to be white, not blue */
-}
-
-/* --- VIDEO PLAYER MODAL (POPUP) --- */
-.video-modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0,0,0,0.9); /* Dark background */
-  z-index: 2000; /* Sit on top of EVERYTHING */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.video-modal-content {
-  position: relative;
-  width: 100%;
-  max-width: 900px;
-  aspect-ratio: 16/9; /* Forces standard video shape */
-  background: black;
-  box-shadow: 0 0 50px rgba(229, 9, 20, 0.3);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.close-video {
-  position: absolute;
-  top: -40px;
-  right: 0;
-  background: transparent;
-  border: 1px solid white;
-  color: white;
-  padding: 5px 15px;
-  cursor: pointer;
-  border-radius: 20px;
-  transition: 0.3s;
-}
-.close-video:hover { background: var(--primary); border-color: var(--primary); }
-
-/* --- FOOTER --- */
-.footer {
-  background-color: #0a0a0a; /* Darker than body */
-  padding: 60px 20px 20px;
-  margin-top: 50px;
-  border-top: 1px solid #222;
-}
-
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 40px;
-  padding-bottom: 40px;
-}
-
-.footer-brand h3 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  color: var(--primary);
-}
-
-.footer-brand p {
-  color: #777;
-  line-height: 1.6;
-}
-
-.footer-links, .footer-social {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.footer-links h4, .footer-social h4 {
-  color: white;
-  margin-bottom: 15px;
-  font-size: 1.1rem;
-}
-
-.footer a {
-  color: #777;
-  transition: color 0.3s;
-}
-
-.footer a:hover {
-  color: var(--primary);
-}
-
-.footer-bottom {
-  text-align: center;
-  padding-top: 20px;
-  border-top: 1px solid #222;
-  color: #555;
-  font-size: 0.9rem;
-}
-
-/* --- GENRE FILTERS --- */
-.genre-container {
-  display: flex;
-  gap: 15px;
-  overflow-x: auto; /* Allows scrolling on mobile if too many genres */
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.genre-btn {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Montserrat', sans-serif;
-}
-
-.genre-btn:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-}
-
-.genre-btn.active {
-  background-color: var(--primary); /* Netflix Red */
-  border-color: var(--primary);
-  font-weight: bold;
-  box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+/* Fix for input autofill colors (Dark Mode only) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--color-card-bg) inset !important;
+    -webkit-text-fill-color: var(--color-text) !important;
+    caret-color: var(--color-text);
 }
