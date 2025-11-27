@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/movie-verse/static/css/main.5523ee6e.css",
-    "main.js": "/movie-verse/static/js/main.81762716.js",
+    "main.css": "/movie-verse/static/css/main.a8dc5758.css",
+    "main.js": "/movie-verse/static/js/main.1a82ba89.js",
     "index.html": "/movie-verse/index.html",
-    "main.5523ee6e.css.map": "/movie-verse/static/css/main.5523ee6e.css.map",
-    "main.81762716.js.map": "/movie-verse/static/js/main.81762716.js.map"
+    "main.a8dc5758.css.map": "/movie-verse/static/css/main.a8dc5758.css.map",
+    "main.1a82ba89.js.map": "/movie-verse/static/js/main.1a82ba89.js.map"
   },
   "entrypoints": [
-    "static/css/main.5523ee6e.css",
-    "static/js/main.81762716.js"
+    "static/css/main.a8dc5758.css",
+    "static/js/main.1a82ba89.js"
   ]
 }
