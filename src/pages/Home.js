@@ -480,11 +480,10 @@ function Home() {
                                     <>
                                         {/* Search Bar */}
                                         <form onSubmit={handleSearch} className="relative">
-                                            {/* 🔥 FIX: Changed 'w-64 md:w-80' to a responsive/smaller mobile width to prevent overflow. 
-                                                'w-40' is 160px, which is safer on small screens. */}
+                                            {/* FIX: Reduced focused width on mobile to prevent overflow */}
                                             <div className={`flex items-center transition-all duration-300 ${
                                                 searchFocused 
-                                                    ? 'w-40 md:w-80' // Reduced focused width on mobile (default) to w-40
+                                                    ? 'w-40 md:w-80' 
                                                     : 'w-10 md:w-56'
                                             }`}>
                                                 <div className={`relative w-full flex items-center ${
@@ -779,7 +778,8 @@ function Home() {
                                 </button>
 
                                 {/* Hero Content */}
-                                <div className="absolute bottom-0 left-0 right-0 z-20 px-4 md:px-12 pb-32">
+                                {/* FIX: Reduced mobile padding-bottom (pb-32 -> pb-28) to pull content up */}
+                                <div className="absolute bottom-0 left-0 right-0 z-20 px-4 md:px-12 pb-28 md:pb-32">
                                     <div className="max-w-2xl">
                                         {/* Media Type Badge */}
                                         <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4
@@ -833,8 +833,9 @@ function Home() {
                                             {trailerKey && (
                                                 <button
                                                     onClick={() => setPlaying(true)}
-                                                    className="flex items-center gap-3 bg-white text-black px-8 py-4 
-                                                            rounded-lg font-bold text-lg hover:bg-white/90 
+                                                    // FIX: Reduced padding (py-3) and font size (text-base) for better mobile button size
+                                                    className="flex items-center gap-3 bg-white text-black px-6 py-3 md:px-8 md:py-4 
+                                                            rounded-lg font-bold text-base md:text-lg hover:bg-white/90 
                                                             transition-all duration-300 hover:scale-105 shadow-xl"
                                                 >
                                                     <FaPlay />
@@ -843,8 +844,9 @@ function Home() {
                                             )}
                                             <Link
                                                 to={`/${mediaType}/${heroMovie.id}`}
+                                                // FIX: Reduced padding (py-3) and font size (text-base) for better mobile button size
                                                 className="flex items-center gap-3 bg-white/20 backdrop-blur-sm text-white 
-                                                            px-8 py-4 rounded-lg font-bold text-lg hover:bg-white/30 
+                                                            px-6 py-3 md:px-8 md:py-4 rounded-lg font-bold text-base md:text-lg hover:bg-white/30 
                                                             transition-all duration-300"
                                             >
                                                 <FaInfoCircle />
@@ -879,7 +881,8 @@ function Home() {
 
                         {/* ===== CONTENT ROWS ===== */}
                         {!isNetworkError && (
-                            <div className="relative z-10 -mt-32 px-4 md:px-12 pb-20 space-y-8">
+                            <div className="relative z-10 -mt-20 md:-mt-32 px-4 md:px-12 pb-20 space-y-8">
+                                {/* FIX: Reduced aggressive negative margin from -mt-32 to -mt-20 on mobile */}
                                 {favoriteGenreData && favoriteGenreData.items.length > 0 && (
                                     <Row
                                         title={favoriteGenreData.name}

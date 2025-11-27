@@ -370,8 +370,8 @@ function TvShowDetail() {
                     <button
                         onClick={() => navigate(-1)}
                         className="absolute top-6 left-6 z-30 flex items-center gap-2 text-white/80 hover:text-white 
-                                   bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full 
-                                   transition-all duration-300 group"
+                                     bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full 
+                                     transition-all duration-300 group"
                     >
                         <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
                         <span className="text-sm font-medium">Back</span>
@@ -382,7 +382,7 @@ function TvShowDetail() {
                         <div className="max-w-3xl">
                             {/* TV Show Badge */}
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/80 backdrop-blur-sm 
-                                            rounded-full text-sm font-medium mb-4">
+                                             rounded-full text-sm font-medium mb-4">
                                 <FaTv size={12} />
                                 TV Series
                             </div>
@@ -420,7 +420,7 @@ function TvShowDetail() {
                                     <span
                                         key={genre.id}
                                         className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white/90
-                                                   hover:bg-white/20 transition-colors cursor-default"
+                                                     hover:bg-white/20 transition-colors cursor-default"
                                     >
                                         {genre.name}
                                     </span>
@@ -483,7 +483,7 @@ function TvShowDetail() {
                                 <button
                                     onClick={handleShare}
                                     className="p-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm 
-                                               transition-all duration-300 hover:scale-110"
+                                         transition-all duration-300 hover:scale-110"
                                     title="Share"
                                 >
                                     <FaShareAlt />
@@ -497,7 +497,7 @@ function TvShowDetail() {
                 <div className="relative z-10 px-6 md:px-16 -mt-8">
 
                     {/* Additional Info Cards */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 md:mb-12"> {/* FIX: Reduced mb-12 to mb-8 on mobile */}
                         <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
                             <p className="text-white/50 text-xs uppercase tracking-wider mb-1">Rating</p>
                             <div className="flex items-center gap-2">
@@ -522,7 +522,7 @@ function TvShowDetail() {
 
                     {/* Watch Providers */}
                     {providers && (providers.flatrate || providers.rent || providers.buy) && (
-                        <div className="mb-12">
+                        <div className="mb-8 md:mb-12"> {/* FIX: Reduced mb-12 to mb-8 on mobile */}
                             <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
                                 <span className="w-1 h-8 bg-gradient-to-b from-blue-500 to-blue-700 rounded-full" />
                                 Where to Watch
@@ -545,11 +545,11 @@ function TvShowDetail() {
                                                             src={`${POSTER_PATH}${prov.logo_path}`}
                                                             alt={prov.provider_name}
                                                             className="w-14 h-14 rounded-xl shadow-lg transition-all duration-300 
-                                                                       group-hover:scale-110 group-hover:shadow-2xl"
+                                                                         group-hover:scale-110 group-hover:shadow-2xl"
                                                             onError={(e) => { e.target.src = FALLBACK_PROFILE; }}
                                                         />
                                                         <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 
-                                                                        transition-opacity whitespace-nowrap text-xs bg-black/90 px-2 py-1 rounded">
+                                                                         transition-opacity whitespace-nowrap text-xs bg-black/90 px-2 py-1 rounded">
                                                             {prov.provider_name}
                                                         </div>
                                                     </a>
@@ -573,7 +573,7 @@ function TvShowDetail() {
                                                             src={`${POSTER_PATH}${prov.logo_path}`}
                                                             alt={prov.provider_name}
                                                             className="w-14 h-14 rounded-xl shadow-lg transition-all duration-300 
-                                                                       group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                                                                         group-hover:scale-110 opacity-80 group-hover:opacity-100"
                                                             onError={(e) => { e.target.src = FALLBACK_PROFILE; }}
                                                         />
                                                     </a>
@@ -597,7 +597,7 @@ function TvShowDetail() {
                                                             src={`${POSTER_PATH}${prov.logo_path}`}
                                                             alt={prov.provider_name}
                                                             className="w-14 h-14 rounded-xl shadow-lg transition-all duration-300 
-                                                                       group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                                                                         group-hover:scale-110 opacity-80 group-hover:opacity-100"
                                                             onError={(e) => { e.target.src = FALLBACK_PROFILE; }}
                                                         />
                                                     </a>
@@ -613,7 +613,7 @@ function TvShowDetail() {
 
                     {/* Cast Section */}
                     {cast.length > 0 && (
-                        <div className="mb-12">
+                        <div className="mb-8 md:mb-12"> {/* FIX: Reduced mb-12 to mb-8 on mobile */}
                             <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
                                 <span className="w-1 h-8 bg-gradient-to-b from-purple-500 to-purple-700 rounded-full" />
                                 Top Cast
@@ -634,11 +634,11 @@ function TvShowDetail() {
                                                     src={actor.profile_path ? `${POSTER_PATH}${actor.profile_path}` : FALLBACK_PROFILE}
                                                     alt={actor.name}
                                                     className="w-full h-full object-cover transition-transform duration-500 
-                                                               group-hover/card:scale-110"
+                                                                 group-hover/card:scale-110"
                                                     onError={(e) => { e.target.src = FALLBACK_PROFILE; }}
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent 
-                                                                opacity-0 group-hover/card:opacity-100 transition-opacity" />
+                                                                 opacity-0 group-hover/card:opacity-100 transition-opacity" />
                                             </div>
                                             <p className="font-semibold text-sm truncate group-hover/card:text-blue-400 transition-colors">
                                                 {actor.name}
@@ -651,18 +651,18 @@ function TvShowDetail() {
                                 <button
                                     onClick={() => scrollRow(castRef, 'left')}
                                     className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-10
-                                               w-12 h-12 bg-black/80 hover:bg-black rounded-full 
-                                               flex items-center justify-center opacity-0 group-hover:opacity-100 
-                                               transition-all duration-300 hover:scale-110 shadow-xl"
+                                                 w-12 h-12 bg-black/80 hover:bg-black rounded-full 
+                                                 flex items-center justify-center opacity-0 group-hover:opacity-100 
+                                                 transition-all duration-300 hover:scale-110 shadow-xl"
                                 >
                                     <FaChevronLeft />
                                 </button>
                                 <button
                                     onClick={() => scrollRow(castRef, 'right')}
                                     className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-10
-                                               w-12 h-12 bg-black/80 hover:bg-black rounded-full 
-                                               flex items-center justify-center opacity-0 group-hover:opacity-100 
-                                               transition-all duration-300 hover:scale-110 shadow-xl"
+                                                 w-12 h-12 bg-black/80 hover:bg-black rounded-full 
+                                                 flex items-center justify-center opacity-0 group-hover:opacity-100 
+                                                 transition-all duration-300 hover:scale-110 shadow-xl"
                                 >
                                     <FaChevronRight />
                                 </button>
@@ -671,7 +671,7 @@ function TvShowDetail() {
                     )}
 
                     {/* Reviews Section */}
-                    <div className="mb-12">
+                    <div className="mb-8 md:mb-12"> {/* FIX: Reduced mb-12 to mb-8 on mobile */}
                         <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
                             <span className="w-1 h-8 bg-gradient-to-b from-pink-500 to-pink-700 rounded-full" />
                             Reviews
@@ -681,7 +681,7 @@ function TvShowDetail() {
                         <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 mb-6">
                             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 
-                                                flex items-center justify-center text-sm font-bold">
+                                                 flex items-center justify-center text-sm font-bold">
                                     {user?.email?.charAt(0).toUpperCase() || 'Y'}
                                 </div>
                                 Your Review
@@ -729,8 +729,8 @@ function TvShowDetail() {
                                         <>
                                             <textarea
                                                 className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white 
-                                                           placeholder-white/30 focus:outline-none focus:border-white/30 
-                                                           transition-colors resize-none"
+                                                             placeholder-white/30 focus:outline-none focus:border-white/30 
+                                                             transition-colors resize-none"
                                                 rows="3"
                                                 placeholder="Share your thoughts about this show..."
                                                 value={userReview}
@@ -739,8 +739,8 @@ function TvShowDetail() {
                                             <button
                                                 onClick={handleSaveReview}
                                                 className="mt-4 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 
-                                                           hover:from-blue-500 hover:to-blue-600 rounded-lg font-semibold 
-                                                           transition-all duration-300 hover:scale-105"
+                                                             hover:from-blue-500 hover:to-blue-600 rounded-lg font-semibold 
+                                                             transition-all duration-300 hover:scale-105"
                                             >
                                                 <FaPen size={14} /> Post Review
                                             </button>
@@ -752,7 +752,7 @@ function TvShowDetail() {
                                                 to="/login"
                                                 state={{ from: `/tv/${id}` }}
                                                 className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 
-                                                           hover:from-blue-500 hover:to-blue-600 rounded-lg font-semibold transition-all"
+                                                             hover:from-blue-500 hover:to-blue-600 rounded-lg font-semibold transition-all"
                                             >
                                                 Sign In
                                             </Link>
@@ -778,12 +778,12 @@ function TvShowDetail() {
                                         <div
                                             key={index}
                                             className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10
-                                                       hover:bg-white/[0.07] transition-colors"
+                                                         hover:bg-white/[0.07] transition-colors"
                                         >
                                             <div className="flex items-start justify-between mb-3">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-purple-500 
-                                                                    flex items-center justify-center font-bold">
+                                                                     flex items-center justify-center font-bold">
                                                         {(review.userEmail || "U").charAt(0).toUpperCase()}
                                                     </div>
                                                     <div>
@@ -818,7 +818,7 @@ function TvShowDetail() {
 
                     {/* Similar Shows */}
                     {similar.length > 0 && (
-                        <div className="mb-16">
+                        <div className="mb-10 md:mb-16"> {/* FIX: Reduced mb-16 to mb-10 on mobile */}
                             <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
                                 <span className="w-1 h-8 bg-gradient-to-b from-green-500 to-green-700 rounded-full" />
                                 More Like This
@@ -839,13 +839,13 @@ function TvShowDetail() {
                                                     src={sim.poster_path ? `${POSTER_PATH}${sim.poster_path}` : FALLBACK_POSTER}
                                                     alt={sim.title || sim.name}
                                                     className="w-full h-full object-cover transition-transform duration-500 
-                                                               group-hover/card:scale-110"
+                                                                 group-hover/card:scale-110"
                                                     onError={(e) => { e.target.src = FALLBACK_POSTER; }}
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent 
-                                                                opacity-0 group-hover/card:opacity-100 transition-opacity" />
+                                                                 opacity-0 group-hover/card:opacity-100 transition-opacity" />
                                                 <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full 
-                                                                group-hover/card:translate-y-0 transition-transform">
+                                                                 group-hover/card:translate-y-0 transition-transform">
                                                     <div className="flex items-center gap-1 text-yellow-400">
                                                         <FaStar size={12} />
                                                         <span className="text-sm font-semibold">{sim.vote_average.toFixed(1)}</span>
@@ -862,18 +862,18 @@ function TvShowDetail() {
                                 <button
                                     onClick={() => scrollRow(similarRef, 'left')}
                                     className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-10
-                                               w-12 h-12 bg-black/80 hover:bg-black rounded-full 
-                                               flex items-center justify-center opacity-0 group-hover:opacity-100 
-                                               transition-all duration-300 hover:scale-110 shadow-xl"
+                                                 w-12 h-12 bg-black/80 hover:bg-black rounded-full 
+                                                 flex items-center justify-center opacity-0 group-hover:opacity-100 
+                                                 transition-all duration-300 hover:scale-110 shadow-xl"
                                 >
                                     <FaChevronLeft />
                                 </button>
                                 <button
                                     onClick={() => scrollRow(similarRef, 'right')}
                                     className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-10
-                                               w-12 h-12 bg-black/80 hover:bg-black rounded-full 
-                                               flex items-center justify-center opacity-0 group-hover:opacity-100 
-                                               transition-all duration-300 hover:scale-110 shadow-xl"
+                                                 w-12 h-12 bg-black/80 hover:bg-black rounded-full 
+                                                 flex items-center justify-center opacity-0 group-hover:opacity-100 
+                                                 transition-all duration-300 hover:scale-110 shadow-xl"
                                 >
                                     <FaChevronRight />
                                 </button>
@@ -908,7 +908,7 @@ function TvShowDetail() {
                         <div className="w-full max-w-6xl aspect-video relative" onClick={e => e.stopPropagation()}>
                             <button
                                 className="absolute -top-12 right-0 flex items-center gap-2 text-white/80 hover:text-white 
-                                           transition-colors group"
+                                         transition-colors group"
                                 onClick={() => setShowTrailer(false)}
                             >
                                 <span className="text-sm">Close</span>

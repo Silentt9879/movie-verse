@@ -247,7 +247,7 @@ function MyReviews() {
                         <Link
                             to="/login"
                             className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 rounded-full font-semibold
-                                       hover:from-red-500 hover:to-red-600 transition-all"
+                                     hover:from-red-500 hover:to-red-600 transition-all"
                         >
                             Sign In
                         </Link>
@@ -275,8 +275,8 @@ function MyReviews() {
                     <button
                         onClick={() => navigate('/profile')}
                         className="absolute top-6 left-6 z-30 flex items-center gap-2 text-white/80 hover:text-white 
-                                   bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full 
-                                   transition-all duration-300 group"
+                                     bg-black/30 hover:bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full 
+                                     transition-all duration-300 group"
                     >
                         <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
                         <span className="text-sm font-medium">Back to Profile</span>
@@ -286,7 +286,7 @@ function MyReviews() {
                     <div className="absolute bottom-0 left-0 right-0 px-6 md:px-16 pb-8">
                         <div className="flex items-center gap-4">
                             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-600 
-                                            flex items-center justify-center shadow-2xl shadow-yellow-500/30">
+                                             flex items-center justify-center shadow-2xl shadow-yellow-500/30">
                                 <FaStar className="text-white text-2xl" />
                             </div>
                             <div>
@@ -314,7 +314,7 @@ function MyReviews() {
                                         key={option.id}
                                         onClick={() => setFilter(option.id)}
                                         className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium 
-                                                    transition-all duration-300 ${
+                                                     transition-all duration-300 ${
                                             filter === option.id
                                                 ? 'bg-white text-black shadow-lg'
                                                 : 'text-white/60 hover:text-white'
@@ -390,7 +390,7 @@ function MyReviews() {
                                 <Link
                                     to="/"
                                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 
-                                               rounded-full font-semibold hover:from-red-500 hover:to-red-600 transition-all"
+                                             rounded-full font-semibold hover:from-red-500 hover:to-red-600 transition-all"
                                 >
                                     <FaFilm /> Browse Content
                                 </Link>
@@ -402,8 +402,8 @@ function MyReviews() {
                                     <div
                                         key={review.id}
                                         className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 
-                                                   overflow-hidden hover:border-white/20 transition-all duration-300 group
-                                                   hover:shadow-xl hover:shadow-black/20"
+                                                 overflow-hidden hover:border-white/20 transition-all duration-300 group
+                                                 hover:shadow-xl hover:shadow-black/20"
                                     >
                                         <div className="flex h-full">
                                             {/* Poster */}
@@ -420,11 +420,11 @@ function MyReviews() {
                                                     />
                                                     {/* Gradient Overlay */}
                                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent 
-                                                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                                                     opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                                     
                                                     {/* Type Badge */}
                                                     <div className={`absolute top-2 left-2 px-2.5 py-1 rounded-lg text-xs font-bold
-                                                                    flex items-center gap-1.5 backdrop-blur-md shadow-lg ${
+                                                                     flex items-center gap-1.5 backdrop-blur-md shadow-lg ${
                                                         review.type === 'movie'
                                                             ? 'bg-red-600/90 text-white'
                                                             : 'bg-blue-600/90 text-white'
@@ -435,7 +435,7 @@ function MyReviews() {
 
                                                     {/* Rating Badge on Poster */}
                                                     <div className="absolute bottom-2 left-2 flex items-center gap-1 
-                                                                    bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg">
+                                                                     bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg">
                                                         <FaStar className="text-yellow-400" size={12} />
                                                         <span className="text-white text-xs font-bold">{review.rating}</span>
                                                     </div>
@@ -443,7 +443,8 @@ function MyReviews() {
                                             </Link>
 
                                             {/* Content */}
-                                            <div className="flex-1 p-5 flex flex-col min-w-0">
+                                            {/* 🔥 FIX: Changed padding to p-4 on mobile for denser content */}
+                                            <div className="flex-1 p-4 md:p-5 flex flex-col min-w-0">
                                                 {/* Title & Rating */}
                                                 <div className="mb-3">
                                                     <Link
@@ -477,8 +478,8 @@ function MyReviews() {
                                                         <Link
                                                             to={review.type === 'movie' ? `/movie/${review.mediaId}` : `/tv/${review.mediaId}`}
                                                             className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 
-                                                                       transition-all duration-300 text-white/50 hover:text-white
-                                                                       hover:scale-110"
+                                                                     transition-all duration-300 text-white/50 hover:text-white
+                                                                     hover:scale-110"
                                                             title="Edit Review"
                                                         >
                                                             <FaEdit size={14} />
@@ -486,8 +487,8 @@ function MyReviews() {
                                                         <button
                                                             onClick={() => setDeleteConfirm(review)}
                                                             className="p-2.5 rounded-xl bg-white/5 hover:bg-red-600/20 
-                                                                       transition-all duration-300 text-white/50 hover:text-red-500
-                                                                       hover:scale-110"
+                                                                     transition-all duration-300 text-white/50 hover:text-red-500
+                                                                     hover:scale-110"
                                                             title="Delete Review"
                                                         >
                                                             <FaTrash size={14} />
@@ -556,14 +557,14 @@ function MyReviews() {
                                 <button
                                     onClick={() => setDeleteConfirm(null)}
                                     className="flex-1 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-semibold
-                                               transition-colors"
+                                                 transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={() => handleDeleteReview(deleteConfirm)}
                                     className="flex-1 py-3 bg-red-600 hover:bg-red-500 rounded-xl font-semibold
-                                               transition-colors"
+                                                 transition-colors"
                                 >
                                     Delete
                                 </button>
