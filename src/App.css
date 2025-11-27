@@ -21,7 +21,12 @@ body {
     background-color: var(--color-background);
     color: var(--color-text);
     font-family: 'Montserrat', sans-serif;
-    overflow-x: auto;
+    /*
+      🔥 Recommendation: Avoid 'overflow-x: auto;' on the body
+      unless absolutely necessary, as it can hide mobile layout bugs.
+      If you see horizontal scrolling, fix the component causing it instead.
+      If you must keep it, the setting you had was: overflow-x: auto;
+    */
     overflow-y: scroll;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -127,4 +132,12 @@ input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px var(--color-card-bg) inset !important;
     -webkit-text-fill-color: var(--color-text) !important;
     caret-color: var(--color-text);
+}
+
+/* ======================================================= */
+/* 🔥 CRITICAL MOBILE FIX (Added for MobileNav) 🔥 */
+/* ======================================================= */
+.pb-safe {
+    /* Uses modern environment variable to account for phone screen cutouts/safe areas (e.g., iPhone home indicator) */
+    padding-bottom: env(safe-area-inset-bottom);
 }

@@ -37,11 +37,13 @@ function Home() {
     const [showHistory, setShowHistory] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [searchFocused, setSearchFocused] = useState(false);
+    // 🔥 OPTIMIZATION: State to store the best image path for the Hero based on device size
+    const [heroImagePath, setHeroImagePath] = useState('');
 
     const observerTarget = useRef(null);
     const timerRef = useRef(null);
 
-    const IMAGE_PATH = "https://image.tmdb.org/t/p/original";
+    const IMAGE_PATH_ORIGINAL = "https://image.tmdb.org/t/p/original";
     const POSTER_PATH = "https://image.tmdb.org/t/p/w500";
 
     // --- TV GENRE ID MAPPING ---
@@ -76,7 +78,8 @@ function Home() {
         { id: 18, name: "Drama" },
     ];
 
-    // Scroll listener for header background
+    // --- MOBILE OPTIMIZATION EFFECTS ---
+    // 1. Scroll listener for header background
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
@@ -84,6 +87,20 @@ function Home() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // 2. Hero Image Path Optimization for Mobile
+    useEffect(() => {
+        const setResponsiveImagePath = () => {
+            // Use w1280 for tablets/small desktops, w780 for phones
+            const pathPrefix = window.innerWidth >= 768 ? 'w1280' : 'w780';
+            setHeroImagePath(`https://image.tmdb.org/t/p/${pathPrefix}`);
+        };
+        
+        setResponsiveImagePath();
+        window.addEventListener('resize', setResponsiveImagePath);
+        return () => window.removeEventListener('resize', setResponsiveImagePath);
+    }, [mediaType]); // Re-evaluate path when mediaType changes
+
 
     const truncate = (str, n) => {
         return str?.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -463,9 +480,11 @@ function Home() {
                                     <>
                                         {/* Search Bar */}
                                         <form onSubmit={handleSearch} className="relative">
+                                            {/* 🔥 FIX: Changed 'w-64 md:w-80' to a responsive/smaller mobile width to prevent overflow. 
+                                                'w-40' is 160px, which is safer on small screens. */}
                                             <div className={`flex items-center transition-all duration-300 ${
                                                 searchFocused 
-                                                    ? 'w-64 md:w-80' 
+                                                    ? 'w-40 md:w-80' // Reduced focused width on mobile (default) to w-40
                                                     : 'w-10 md:w-56'
                                             }`}>
                                                 <div className={`relative w-full flex items-center ${
@@ -490,11 +509,12 @@ function Home() {
                                                         }}
                                                         onBlur={() => {
                                                             setSearchFocused(false);
-                                                            setTimeout(() => setShowHistory(false), 200);
+                                                            // Keep a small delay to allow clicking history links
+                                                            setTimeout(() => setShowHistory(false), 200); 
                                                         }}
                                                         autoComplete="off"
-                                                        className="w-full bg-transparent text-white placeholder-white/40 pl-10 pr-10 py-2.5 
-                                                                   focus:outline-none text-sm"
+                                                        id="searchInput"
+                                                        className="w-full bg-transparent text-white placeholder-white/40 pl-10 pr-10 py-2.5 focus:outline-none text-sm"
                                                     />
                                                     {searchKey && (
                                                         <button
@@ -510,8 +530,7 @@ function Home() {
 
                                             {/* Search History Dropdown */}
                                             {showHistory && searchHistory.length > 0 && (
-                                                <div className="absolute top-full right-0 w-80 mt-2 bg-[#1a1a1a] border border-white/10 
-                                                                rounded-xl shadow-2xl overflow-hidden z-50 animate-fadeIn">
+                                                <div className="absolute top-full right-0 w-80 mt-2 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 animate-fadeIn">
                                                     <div className="px-4 py-3 border-b border-white/10">
                                                         <p className="text-xs font-semibold text-white/50 uppercase tracking-wider">
                                                             Recent Searches
@@ -525,8 +544,7 @@ function Home() {
                                                                 addToHistory(term);
                                                                 setShowHistory(false);
                                                             }}
-                                                            className="flex items-center justify-between px-4 py-3 hover:bg-white/5 
-                                                                       cursor-pointer transition-colors group"
+                                                            className="flex items-center justify-between px-4 py-3 hover:bg-white/5 cursor-pointer transition-colors group"
                                                         >
                                                             <div className="flex items-center gap-3">
                                                                 <FaHistory className="text-white/30 group-hover:text-red-500 transition-colors" />
@@ -551,19 +569,19 @@ function Home() {
                                             title="My Profile"
                                         >
                                             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-red-500 to-orange-600 
-                                                            flex items-center justify-center text-white font-bold text-sm
-                                                            group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                                                flex items-center justify-center text-white font-bold text-sm
+                                                group-hover:scale-110 transition-transform duration-300 shadow-lg">
                                                 {user.email.charAt(0).toUpperCase()}
                                             </div>
                                             <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full 
-                                                            border-2 border-[#0a0a0a]" />
+                                                border-2 border-[#0a0a0a]" />
                                         </Link>
 
                                         {/* Logout Button */}
                                         <button
                                             onClick={handleLogout}
                                             className="p-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 
-                                                       hover:text-white transition-all duration-300"
+                                                hover:text-white transition-all duration-300"
                                             title="Sign Out"
                                         >
                                             <FaSignOutAlt size={16} />
@@ -580,9 +598,9 @@ function Home() {
                                         <Link
                                             to="/register"
                                             className="flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-700 
-                                                       hover:from-red-500 hover:to-red-600 text-white px-5 py-2.5 
-                                                       rounded-lg font-semibold text-sm transition-all duration-300 
-                                                       hover:scale-105 shadow-lg"
+                                                hover:from-red-500 hover:to-red-600 text-white px-5 py-2.5 
+                                                rounded-lg font-semibold text-sm transition-all duration-300 
+                                                hover:scale-105 shadow-lg"
                                         >
                                             <FaUser size={12} />
                                             Get Started
@@ -599,7 +617,7 @@ function Home() {
                                     key={genre.id}
                                     onClick={() => handleGenreClick(genre)}
                                     className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap 
-                                               transition-all duration-300 ${
+                                            transition-all duration-300 ${
                                         selectedGenre === genre.id
                                             ? 'bg-white text-black shadow-lg scale-105'
                                             : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/10'
@@ -652,8 +670,8 @@ function Home() {
                                                     className="group relative"
                                                 >
                                                     <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-white/5
-                                                                    group-hover:ring-2 group-hover:ring-white/50 
-                                                                    transition-all duration-300 group-hover:scale-105">
+                                                        group-hover:ring-2 group-hover:ring-white/50 
+                                                        transition-all duration-300 group-hover:scale-105">
                                                         <img
                                                             src={item.poster_path
                                                                 ? `${POSTER_PATH}${item.poster_path}`
@@ -663,7 +681,7 @@ function Home() {
                                                         />
                                                         {/* Hover Overlay */}
                                                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent 
-                                                                        opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                                             <div className="absolute bottom-0 left-0 right-0 p-4">
                                                                 <div className="flex items-center gap-2 mb-2">
                                                                     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
@@ -676,7 +694,7 @@ function Home() {
                                                         {/* Rating Badge */}
                                                         {item.vote_average > 0 && (
                                                             <div className="absolute top-2 right-2 flex items-center gap-1 
-                                                                            bg-black/70 backdrop-blur-sm px-2 py-1 rounded-md">
+                                                                    bg-black/70 backdrop-blur-sm px-2 py-1 rounded-md">
                                                                 <FaStar className="text-yellow-400 text-xs" />
                                                                 <span className="text-xs font-semibold">{item.vote_average.toFixed(1)}</span>
                                                             </div>
@@ -728,7 +746,8 @@ function Home() {
                                 {/* Background Image */}
                                 <div
                                     className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
-                                    style={{ backgroundImage: `url(${IMAGE_PATH}${heroMovie.backdrop_path})` }}
+                                    // 🔥 OPTIMIZATION: Use the responsive image path
+                                    style={{ backgroundImage: `url(${heroImagePath}${heroMovie.backdrop_path})` }}
                                 >
                                     {/* Gradient Overlays */}
                                     <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent" />
@@ -740,10 +759,10 @@ function Home() {
                                 <button
                                     onClick={() => handleHeroChange('prev')}
                                     className="absolute top-1/2 left-4 -translate-y-1/2 z-30 w-12 h-12 
-                                               bg-black/30 hover:bg-black/60 backdrop-blur-sm rounded-full 
-                                               flex items-center justify-center text-white/70 hover:text-white 
-                                               transition-all duration-300 opacity-0 hover:opacity-100 
-                                               group-hover:opacity-100 hidden md:flex"
+                                        bg-black/30 hover:bg-black/60 backdrop-blur-sm rounded-full 
+                                        flex items-center justify-center text-white/70 hover:text-white 
+                                        transition-all duration-300 opacity-0 hover:opacity-100 
+                                        group-hover:opacity-100 hidden md:flex"
                                 >
                                     <FaChevronLeft size={20} />
                                 </button>
@@ -751,10 +770,10 @@ function Home() {
                                 <button
                                     onClick={() => handleHeroChange('next')}
                                     className="absolute top-1/2 right-4 -translate-y-1/2 z-30 w-12 h-12 
-                                               bg-black/30 hover:bg-black/60 backdrop-blur-sm rounded-full 
-                                               flex items-center justify-center text-white/70 hover:text-white 
-                                               transition-all duration-300 opacity-0 hover:opacity-100 
-                                               group-hover:opacity-100 hidden md:flex"
+                                        bg-black/30 hover:bg-black/60 backdrop-blur-sm rounded-full 
+                                        flex items-center justify-center text-white/70 hover:text-white 
+                                        transition-all duration-300 opacity-0 hover:opacity-100 
+                                        group-hover:opacity-100 hidden md:flex"
                                 >
                                     <FaChevronRight size={20} />
                                 </button>
@@ -775,8 +794,8 @@ function Home() {
                                         {/* Title */}
                                         <Link to={`/${mediaType}/${heroMovie.id}`}>
                                             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-4 leading-none 
-                                                           tracking-tight hover:text-white/80 transition-colors cursor-pointer
-                                                           drop-shadow-2xl"
+                                                            tracking-tight hover:text-white/80 transition-colors cursor-pointer
+                                                            drop-shadow-2xl"
                                                 style={{
                                                     display: '-webkit-box',
                                                     WebkitLineClamp: '2',
@@ -815,8 +834,8 @@ function Home() {
                                                 <button
                                                     onClick={() => setPlaying(true)}
                                                     className="flex items-center gap-3 bg-white text-black px-8 py-4 
-                                                               rounded-lg font-bold text-lg hover:bg-white/90 
-                                                               transition-all duration-300 hover:scale-105 shadow-xl"
+                                                            rounded-lg font-bold text-lg hover:bg-white/90 
+                                                            transition-all duration-300 hover:scale-105 shadow-xl"
                                                 >
                                                     <FaPlay />
                                                     Play
@@ -825,8 +844,8 @@ function Home() {
                                             <Link
                                                 to={`/${mediaType}/${heroMovie.id}`}
                                                 className="flex items-center gap-3 bg-white/20 backdrop-blur-sm text-white 
-                                                           px-8 py-4 rounded-lg font-bold text-lg hover:bg-white/30 
-                                                           transition-all duration-300"
+                                                            px-8 py-4 rounded-lg font-bold text-lg hover:bg-white/30 
+                                                            transition-all duration-300"
                                             >
                                                 <FaInfoCircle />
                                                 More Info
@@ -924,7 +943,7 @@ function Home() {
                         <div className="w-full max-w-6xl aspect-video relative" onClick={e => e.stopPropagation()}>
                             <button
                                 className="absolute -top-12 right-0 flex items-center gap-2 text-white/70 hover:text-white 
-                                           transition-colors group"
+                                        transition-colors group"
                                 onClick={() => setPlaying(false)}
                             >
                                 <span className="text-sm">Close</span>
